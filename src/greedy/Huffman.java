@@ -2,8 +2,10 @@ package greedy;
 
 import javax.swing.*;
 import java.io.*;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.PriorityQueue;
 
 public class Huffman {
     private String text = ""; // 적재된 텍스트 파일을 저장할 문자열
@@ -12,14 +14,19 @@ public class Huffman {
         Huffman huffman = new Huffman();
         File file = huffman.fileChoose();
         HashMap<Character, Integer> freq = huffman.countFrequency(file);
+        PriorityQueue<Node> queue = huffman.makeTree(freq);
+        // 여기서부턴 해쉬맵에 문자랑 빈도수 잘 들어갔는지 확인용도, 지워도됨
+//        Iterator<Character> keys = freq.keySet().iterator();
+//
+//        while (keys.hasNext()){
+//            char key = keys.next();
+//            System.out.println("character : " + key + " frequency : " + freq.get(key));
+//        }
 
-        // 여기서부턴 그냥 문자랑 빈도수 잘 들어갔는지 확인용도, 지워도됨
-        Iterator<Character> keys = freq.keySet().iterator();
-
-        while (keys.hasNext()){
-            char key = keys.next();
-            System.out.println("character : " + key + " frequency : " + freq.get(key));
-        }
+        // 여기서부턴 우선순위 큐에 노드 잘 들어갔는지 확인용도, 지워도 됨
+//        while (!queue.isEmpty()){
+//            System.out.println(queue.remove().frequency+"");
+//        }
 
 
     }
@@ -50,6 +57,13 @@ public class Huffman {
         private char character;
         private int frequency;
         private Node left,right;
+
+        public Node(char character, int frequency, Node left, Node right) {
+            this.character = character;
+            this.frequency = frequency;
+            this.left = left;
+            this.right = right;
+        }
     }
     public HashMap<Character, Integer> countFrequency(File file){
         String line;
@@ -65,7 +79,6 @@ public class Huffman {
                     else{
                         frequency.put(c, 1);
                     }
-
                 }
             }
             br.close();
@@ -76,6 +89,22 @@ public class Huffman {
         return frequency;
     }
 
+    public PriorityQueue makeTree(HashMap<Character, Integer> freq){
+        Iterator<Character> keys = freq.keySet().iterator();
+        PriorityQueue<Node> queue = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return o1.frequency - o2.frequency;
+            }
+        });
+        while (keys.hasNext()){
+            char key = keys.next();
+            Node node = new Node(key, freq.get(key), null, null);
+            queue.add(node);
+        }
+
+        return queue;
+    }
 
     public String encoding(String text, HashMap<Character, Integer> freq){ // 텍스트 인코딩
         int i = 0;
