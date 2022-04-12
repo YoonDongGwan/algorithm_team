@@ -7,7 +7,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class Huffman {
+public class Huffman_final {
     private String text = ""; // 적재된 텍스트 파일을 저장할 문자열
     private long fileSize; // 원래 파일의 크기(byte)
     public static void main(String[] args) {
@@ -121,7 +121,7 @@ public class Huffman {
         System.out.println(text); // print
 
         HashMap<Character, Integer> dict = new HashMap<Character, Integer>();
-            System.out.println(dict); //print
+        System.out.println(dict); //print
 
         PriorityQueue<Node> queue = new PriorityQueue<Node>(100, new freqComparator);
         int num = 0;
