@@ -121,6 +121,21 @@ public HashMap<Character, Integer> countFrequency(File file){ // 빈도수 체�
 
 **문자와 빈도수가 저장되어 있는 HashMap을 이용해 노드를 만들고 우선 순위 큐에 삽입한다.**
 ```
+public class Node{
+        private char character;
+        private int frequency;
+        private Node left,right;
+
+        public Node(char character, int frequency, Node left, Node right) {
+            this.character = character;
+            this.frequency = frequency;
+            this.left = left;
+            this.right = right;
+        }
+    }
+```
+**우선 노드 클래스는 위와 같다. 노드는 문자 값, 빈도수 값과 왼쪽 자식 노드, 오른쪽 자식 노드를 가진다.**
+```
 public Node makeTree(HashMap<Character, Integer> freq){ // 허프만 트리 생성
         Iterator<Character> keys = freq.keySet().iterator();
         PriorityQueue<Node> queue = new PriorityQueue<>(new Comparator<Node>() {
@@ -143,5 +158,37 @@ public Node makeTree(HashMap<Character, Integer> freq){ // 허프만 트리 생�
         Node root = queue.remove();                                 // 최종적으로 만들어진 루트 노드를 가져와 리턴한다.
 
         return root;
+    }
+```
+**루트 노드를 통해 각 문자의 노드에 방문하여 프리픽스 값을 할당한다.**
+```
+private void binaryEncode(Node n, String s) { // 문자들을 이진수로 변환
+        if (n == null) {
+            return;
+        }
+
+        binaryEncode(n.left, s + "0");        // 왼쪽 자식으로 이동하면 프리픽스에 0 추가
+        binaryEncode(n.right, s + "1");       // 오른쪽 자식으로 이동하면 1 추가
+
+        if(n.character != '\0') {            
+            if(n.character == '\n'){
+                System.out.println("\\n" + " : " + s);
+            }else {
+                System.out.println(n.character + " : " + s); // print
+            }
+            binaryCode.put(n.character, s);   // 전역변수로 선언된 HashMap에 문자와 할당된 프리픽스 값을 저장한다.
+        }
+    }
+```
+**저장된 프리픽스 값을 이용해 읽었던 문자열을 변환(압축)한다.**
+```
+public String encoding(String text, HashMap<Character, String> binaryCode){ // 텍스트 인코딩
+        int i = 0;
+        String encodedText = new String();
+        while (i < text.length()){
+            encodedText += binaryCode.get(text.charAt(i));
+            i++;
+        }
+        return encodedText;
     }
 ```
