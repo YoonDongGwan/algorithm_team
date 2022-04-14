@@ -131,6 +131,7 @@ A행렬의 **행**을 **i**로 B행렬의 **열**을 **j**로 arr[i][j]로 결�
 
 
 
+
 ----------------------------------
 
 ## 행렬의 곱셈 간 최소 곱셈 횟수 찾기
@@ -146,35 +147,35 @@ package DynamicProgramming;
 
 public class MatrixChain {
     public static void main(String[] args) {
-        int[][] mat1, mat2, mat3, mat4;
+        int[][] mat1, mat2, mat3, mat4;  10 X 20, 20 X 5, 5 X 15, 15 X 30 행렬 4개를 만든다.
         mat1 = new int[10][20];
         mat2 = new int[20][5];
         mat3 = new int[5][15];
         mat4 = new int[15][30];
 
         MatrixChain matrixChain = new MatrixChain();
-        System.out.println(matrixChain.Minimum(mat1, mat2, mat3, mat4));
+        System.out.println(matrixChain.Minimum(mat1, mat2, mat3, mat4));  // 최소 곱셈 횟수를 출력한다.
     }
     private int Minimum(int[][]...matrix) {
         int n = matrix.length, p = 0;
         int[] d = new int[n+1];
-        for (int[][] array : matrix) {
+        for (int[][] array : matrix) {  // 정수형 배열 d에 각 행렬의 행의 갯수와 열의 갯수를 저장한다.
             d[p] = array.length;
             d[++p] = array[0].length;
         }
 
-        int[][] c = new int[n][n];
+        int[][] c = new int[n][n];  // 곱셈 수를 구하기 위한 새로운 이차원 배열을 만든다.
         for (int a = 0; a < n; a++) {
             for (int i = 0; i < c.length - a; i++) {
                 int j = i + a;
                 if(i == j){
-                    c[i][j] = 0;
+                    c[i][j] = 0; // 자기 자신과 곱해지는 행렬은 없으므로 0을 삽입한다.
                 }
                 else{
                     c[i][j] = Integer.MAX_VALUE;
-                    for (int k = i; k <= j - 1; k++){
-                        c[i][j] = Math.min(c[i][j], c[i][k] + c[k+1][j] + (d[i] * d[k+1] * d[j+1]));
-                    }
+                    for (int k = i; k <= j - 1; k++){  // 곱의 순서를 바꿔보며, 가장 작은 연산 수를 Math.min 함수를 통해 배열에 삽입한다.
+                        c[i][j] = Math.min(c[i][j], c[i][k] + c[k+1][j] + (d[i] * d[k+1] * d[j+1])); 
+                     }
                 }
             }
         }
@@ -184,14 +185,18 @@ public class MatrixChain {
             }
             System.out.println();
         }
-        return c[0][n-1];
+        return c[0][n-1]; // 최종적으로 최소 곱셈 횟수를 출력한다.
     }
 }
 ```
 
 **최종 출력**
+```
+0		1000		1750		4750		
+0		0		   1500		5250		
+0		0		   0		   2250		
+0		0		   0		   0		
 
-    System.out.print(c[i][j] + "\t\t");
-
--> 최종적으로 연속 행렬 곱셈 값이 출력된다.
-
+4750
+```
+-> 이처럼 최소 연산 수가 4750이 나왔음을 알 수 있다.
