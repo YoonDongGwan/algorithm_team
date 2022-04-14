@@ -84,49 +84,6 @@ A행렬의 **행**을 **i**로 B행렬의 **열**을 **j**로 arr[i][j]로 결�
     array[i][1] = Integer.parseInt(st.nextToken());
     }
 
-**Dynamic Programming**
-
-
-    static int Minimum(int[][]...matrix) {
-        int n = matrix.length, p = 0;
-        int[] d = new int[n+1];
-        for (int[][] array : matrix) {
-            d[p] = array.length;
-            d[++p] = array[0].length;
-        }
-
-        int[][] c = new int[n][n];
-        for (int a = 0; a < n; a++) {
-            for (int i = 0; i < c.length - a; i++) {
-                int j = i + a;
-                if(i == j){
-                    c[i][j] = 0;
-                }
-                else{
-                    c[i][j] = Integer.MAX_VALUE;
-                    for (int k = i; k <= j - 1; k++){
-                        c[i][j] = Math.min(c[i][j], c[i][k] + c[k+1][j] + (d[i] * d[k+1] * d[j+1]));
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < n; i++){
-            for (int j = 0; j < n; j++){
-                System.out.print(c[i][j] + "\t\t");
-            }
-            System.out.println();
-        }
-        return c[0][n-1];
-    }
-
-**최종 출력**
-
-    System.out.print(c[i][j] + "\t\t");
-
--> 최종적으로 연속 행렬 곱셈 값이 출력된다.
-
-----------------------------------
-
 ### 전체 코드
 
     package DynamicProgramming;
@@ -170,9 +127,35 @@ A행렬의 **행**을 **i**로 B행렬의 **열**을 **j**로 arr[i][j]로 결�
             array[i][1] = Integer.parseInt(st.nextToken());
         }
     }
+}
 
-    // Dynamic Programming
-    static int Minimum(int[][]...matrix) {
+
+
+----------------------------------
+
+## 행렬의 곱셈 간 최소 곱셈 횟수 찾기
+
+행렬의 곱셈에서 곱셈의 순서는 중요한 요소이다. 행렬을 곱하는 순서에 따라 연산의 수가 바뀌기 때문이다.
+예를 들어, A, B, C 행렬이 있을 때, 이 세 행렬의 곱셈 ABC의 결과는 (A X B) X C 를 수행하던, A X (B X C) 를 수행하던, 동일한 결과를 보이겠지만, 곱셈을 수행하기 위해 필요한 연산 수는 두 경우가 다르다.  
+A의 크기가 10 X 20, B의 크기가 20 X 5, C의 크기가 5 X 15라 하자.  
+(A X B) X C 의 경우, 연산의 수는 (10 X 20 X 5) + (10 X 5 X 15) = 1750 이다.  
+A X (B X C) 의 경우, 연산의 수는 (20 X 5 X 15) + (10 X 20 X 15) = 4500 이다.
+
+```
+package DynamicProgramming;
+
+public class MatrixChain {
+    public static void main(String[] args) {
+        int[][] mat1, mat2, mat3, mat4;
+        mat1 = new int[10][20];
+        mat2 = new int[20][5];
+        mat3 = new int[5][15];
+        mat4 = new int[15][30];
+
+        MatrixChain matrixChain = new MatrixChain();
+        System.out.println(matrixChain.Minimum(mat1, mat2, mat3, mat4));
+    }
+    private int Minimum(int[][]...matrix) {
         int n = matrix.length, p = 0;
         int[] d = new int[n+1];
         for (int[][] array : matrix) {
@@ -197,9 +180,18 @@ A행렬의 **행**을 **i**로 B행렬의 **열**을 **j**로 arr[i][j]로 결�
         }
         for (int i = 0; i < n; i++){
             for (int j = 0; j < n; j++){
-                System.out.print(c[i][j] + "\t\t");             }
+                System.out.print(c[i][j] + "\t\t");
+            }
             System.out.println();
         }
         return c[0][n-1];
-      }
     }
+}
+```
+
+**최종 출력**
+
+    System.out.print(c[i][j] + "\t\t");
+
+-> 최종적으로 연속 행렬 곱셈 값이 출력된다.
+
